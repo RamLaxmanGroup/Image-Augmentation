@@ -1,0 +1,9 @@
+AdditiveGaussianNoise
+AdditiveLaplaceNoise
+GaussianBlur
+GammaContrast
+LogContrast
+LinearContrast
+ScaleX
+ScaleY
+Rotate
