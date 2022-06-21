@@ -1,6 +1,3 @@
-from cv2 import rotate
-from matplotlib import scale
-from numpy import angle
 from imgaug import augmenters
 
 def get_child_augmenters():
@@ -34,7 +31,7 @@ def get_child_augmenters():
     #child_augment_dict['PerspectiveTransform'] = augmenters.PerspectiveTransform(scale=(0.01, 0.1), keep_size=True,  fit_output=True)
     #child_augment_dict['ElasticTransformation'] = augmenters.geometric.ElasticTransformation(alpha=(0.0, 10.0), sigma=5.0), # use it rarely
     #child_augment_dict['Affine'] = augmenters.Affine(scale=(0.3, 1.3), rotate=(180),fit_output=True)
-    child_augment_dict['Affine'] = augmenters.Affine(scale=0.2, fit_output=True) # zoom out on images by 5 times (1/5 =0.2)
+    child_augment_dict['Affine'] = augmenters.Affine(scale=0.2, rotate=(90, 180), fit_output=True) # zoom out on images by 5 times (1/5 =0.2)
     #child_augment_dict['ScaleX'] = augmenters.geometric.ScaleX(scale=(0.5, 1.5), fit_output=True)
     #child_augment_dict['ScaleX'] = augmenters.geometric.ScaleX(scale=(0.5, 1.5), fit_output=True)
 
@@ -47,6 +44,8 @@ def apply_augmentations():
 
     transformations_someof = augmenters.SomeOf(n=(1, 9), children=list(child_augment_dict.values()))
 
+    # augmenters.SomeOf
+    # augmenters.Sequential
     trans = augmenters.Sequential([
         #augmenters.arithmetic.AdditiveGaussianNoise(scale=0.05*255),
         #augmenters.arithmetic.AdditiveLaplaceNoise(scale=0.05*255),

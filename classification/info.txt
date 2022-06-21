@@ -1,0 +1,11 @@
+python run_augmentation.py --input_dir ./data/inputs/v1/base/50 --output_dir ./data/outputs/v1/50 --use_range True --aug_version v1 --start 0.007 --end 0.07 --num_annot 6 ----> 66 images generated for class '50'
+python run_augmentation.py --input_dir ./data/inputs/v1/base/80 --output_dir ./data/outputs/v1/80 --use_range True --aug_version v1 --start 0.007 --end 0.07 --num_annot 6 ----> 66 images generated for class '80'
+python run_augmentation.py --input_dir ./data/inputs/v1/base/100 --output_dir ./data/outputs/v1/100 --use_range True --aug_version v1 --start 0.007 --end 0.07 --num_annot 6 ----> 66 images generated for class '100'
+
+
+python run_augmentation.py --input_dir ./data/inputs/v1/base/50 --output_dir ./data/outputs/v1/50 --use_range False --aug_version v1 --value 0.07
+
+python run_augmentation.py --input_dir ./data/inputs/v1/base/80 --output_dir ./data/outputs/v1/test --use_range True --aug_version test_v1 --start -5 --end 4 --num_annot 3 --use_angle True
+
+
+python run_augmentation.py --input_dir ./data/inputs/v2/base/110 --output_dir ./data/outputs/v2/train_data/hundred-ten --use_range True --aug_version train_v2 --start -10 --end 10 --num_annot 40 --use_angle True

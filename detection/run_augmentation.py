@@ -25,6 +25,7 @@ def get_args():
     parser.add_argument("--input_annotations_path", help="input annotation/s directory.")
     parser.add_argument("--output_images_path", default="./dataset/images", help="output image/s directory.")
     parser.add_argument("--output_annotations_path", default="./dataset/annotations", help="output annotation/s directory.")
+    parser.add_argument("--num_annot", default="1", help='number of images per image')
 
     args = parser.parse_args()
     args.shape_override = None
@@ -48,13 +49,13 @@ def check_make_dir(path):
         print(f'{path} exists:')
 
 
-def main(input_images_path, input_annotations_path, output_images_path, output_annotations_path, filenames_images, filenames_annotations):
-    num_of_annotations = 10
+def main(input_images_path, input_annotations_path, output_images_path, output_annotations_path, filenames_images, filenames_annotations, num_of_annotations):
     for filename_image in filenames_images:
         for iter_num in range(num_of_annotations):
             bboxes = []
             filename_split = filename_image.split('.')
-            filename_annotation = filename_split[0] + '.xml'
+            #filename_annotation = filename_split[0] + '.xml'
+            filename_annotation = '.'.join(filename_split[:-1]) + '.xml'
             if filename_annotation in filenames_annotations:
                 path_xml_file = os.path.join(input_annotations_path, filename_annotation)
                 folder, _, path_img, width, height, depth, segmented, objects = read_xml(path_xml_file)
@@ -64,8 +65,9 @@ def main(input_images_path, input_annotations_path, output_images_path, output_a
                 break
             
             letters = string.ascii_letters
+            annotation_version = 'Av2_'
             random_suffix = str(random.randint(100, 999)) + ''.join((random.choice(letters) for _ in range(5))) + str(random.randint(1000, 2999))
-            new_filename = filename_split[0] + "_" + str(iter_num) + "_" + random_suffix
+            new_filename = annotation_version + filename_split[0] + "_" + str(iter_num) + "_" + random_suffix
             
 
             for object in objects:
@@ -128,6 +130,7 @@ def main(input_images_path, input_annotations_path, output_images_path, output_a
 
             # write augmented bounded box in xml file
             write_xml(folder, new_filename_image, path_img, width, height, depth, segmented, bboxes, new_filename_xml_path)
+            print(f"{new_filename_image} {new_filename_xml} saved to directory.")
 
 
 
@@ -139,22 +142,30 @@ if __name__=='__main__':
     input_annotations_path = args.input_annotations_path
     output_images_path = args.output_images_path
     output_annotations_path = args.output_annotations_path
+    num_annot = int(args.num_annot)
 
     check_make_dir(output_images_path)
     check_make_dir(output_annotations_path)
     
 
     if check_dir(input_images_path) and check_dir(input_annotations_path):
-        filenames_images = os.listdir(input_images_path)
+        filenames_images = os.listdir(input_images_path) 
+        filenames_images = [filename for filename in filenames_images if filename.startswith('IMG')] # selecting filenames starting with 'IMG'
+
         filenames_annotations = os.listdir(input_annotations_path)
+        filenames_annotations = [filename for filename in filenames_annotations if filename.startswith('IMG')] # selecting filenames starting with 'IMG'
+
         if len(filenames_images) == len(filenames_annotations):
-            main(input_images_path, input_annotations_path, output_images_path, output_annotations_path, filenames_images, filenames_annotations)
+            #print(filenames_images, filenames_annotations)
+            #print('in if condition')
+            main(input_images_path, input_annotations_path, output_images_path, output_annotations_path, filenames_images, filenames_annotations, num_annot)
+            
         else:
             print('\nAll images don\'t have their annotations')
             print('Choosing images which have their corresponding annotations')
             filenames_images, filenames_annotations = xml_for_image(filenames_images, filenames_annotations)
-            print(filenames_images, filenames_annotations)
-            main(input_images_path, input_annotations_path, output_images_path, output_annotations_path, filenames_images, filenames_annotations)
+            #print(filenames_images, filenames_annotations)
+            main(input_images_path, input_annotations_path, output_images_path, output_annotations_path, filenames_images, filenames_annotations, num_annot)
             
     else:
         print('Image or Annotation directory is wrong. Please update it with correct one.')
